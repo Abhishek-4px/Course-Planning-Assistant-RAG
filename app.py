@@ -76,40 +76,46 @@ def answer_query(query: str, completed_courses_str: str) -> str:
         return f"❌ An error occurred: {str(e)}\n\nPlease try rephrasing your query."
 
 
-# ── Gradio Interface ───────────────────────────────────
+# ── Gradio Interface (Blocks) ──────────────────────────
 
-demo = gr.Interface(
-    fn=answer_query,
-    inputs=[
-        gr.Textbox(
-            label="📝 Your Query",
-            placeholder="e.g., Can I take Data Structures? / What should I take next? / What is DBMS about?",
-            lines=2,
-        ),
-        gr.Textbox(
-            label="✅ Completed Courses (comma-separated)",
-            placeholder="e.g., Python, Mathematics, C Programming",
-            lines=1,
-        ),
-    ],
-    outputs=gr.Textbox(label="💡 Answer", lines=15),
-    title="🎓 Course Planning Assistant",
-    description=(
+with gr.Blocks(theme=gr.themes.Soft()) as demo:
+    gr.Markdown("# Course Planning Assistant")
+    gr.Markdown(
         "Ask questions about courses, check prerequisites, or plan your next semester. "
         "All answers are grounded in official course handouts, program guides, and college policies — "
         "with page-level citations."
-    ),
-    examples=[
-        ["Can I take Data Structures and Algorithms?", "Mathematics, C Programming"],
-        ["What should I take next semester?", "Python, DSA, Mathematics, DBMS"],
-        ["What topics does Operating Systems cover?", ""],
-        ["What is the grading policy?", ""],
-        ["Can I take Deep Learning?", "Python, Statistics, Machine Learning"],
-    ],
-    theme=gr.themes.Soft(),
-
-)
-
+    )
+    
+    with gr.Row():
+        with gr.Column(scale=3):
+            query_input = gr.Textbox(
+                label="Your Query",
+                placeholder="e.g., Can I take Data Structures? / What should I take next? / What is DBMS about?",
+                lines=2,
+            )
+            completed_input = gr.Textbox(
+                label="Completed Courses (comma-separated)",
+                placeholder="e.g., Python, Mathematics, C Programming",
+                lines=1,
+            )
+            submit_btn = gr.Button("Submit", variant="primary")
+            gr.DeepLinkButton("Share This Response", variant="secondary")
+            
+        with gr.Column(scale=4):
+            output = gr.Textbox(label="Answer", lines=15)
+            
+    submit_btn.click(fn=answer_query, inputs=[query_input, completed_input], outputs=output)
+    
+    gr.Examples(
+        examples=[
+            ["Can I take Data Structures and Algorithms?", "Mathematics, C Programming"],
+            ["What should I take next semester?", "Python, DSA, Mathematics, DBMS"],
+            ["What topics does Operating Systems cover?", ""],
+            ["What is the grading policy?", ""],
+            ["Can I take Deep Learning?", "Python, Statistics, Machine Learning"],
+        ],
+        inputs=[query_input, completed_input]
+    )
 
 if __name__ == "__main__":
     demo.launch(share=True)
