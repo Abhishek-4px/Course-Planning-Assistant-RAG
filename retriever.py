@@ -1,9 +1,4 @@
-"""
-Retriever Module
-- FAISS similarity search
-- Evidence filtering (prerequisite-priority)
-- Page aggregation for structured context
-"""
+
 from typing import List, Dict, Tuple, Any
 
 from langchain_community.vectorstores import FAISS
@@ -12,10 +7,6 @@ from config import TOP_K, EVIDENCE_KEYWORDS
 
 
 def retrieve(vectorstore: FAISS, query: str, top_k: int = TOP_K) -> List[Tuple[str, Dict[str, Any]]]:
-    """
-    Retrieve the top-k most similar chunks for a query.
-    Returns list of (chunk_text, metadata) tuples.
-    """
     results = vectorstore.similarity_search_with_score(query, k=top_k)
     return [(doc.page_content, doc.metadata) for doc, _score in results]
 
@@ -23,11 +14,6 @@ def retrieve(vectorstore: FAISS, query: str, top_k: int = TOP_K) -> List[Tuple[s
 def evidence_filter(
     chunks: List[Tuple[str, Dict[str, Any]]],
 ) -> List[Tuple[str, Dict[str, Any]]]:
-    """
-    Prioritize chunks that contain evidence-related keywords
-    (prerequisite, requirement, must complete, etc.).
-    Falls back to ALL chunks if none match.
-    """
     priority = []
     for text, meta in chunks:
         text_lower = text.lower()
@@ -36,21 +22,14 @@ def evidence_filter(
 
     if priority:
         return priority
-    # Fallback: return everything
+    
     return chunks
 
 
 def aggregate_by_page(
     chunks: List[Tuple[str, Dict[str, Any]]],
 ) -> str:
-    """
-    Group chunks by (source, page) and build a structured context string.
-
-    Output format:
-        [Document Name - Page X]
-        - chunk text 1
-        - chunk text 2
-    """
+    
     groups: Dict[Tuple[str, int], List[str]] = {}
     for text, meta in chunks:
         key = (meta.get("source", "Unknown"), meta.get("page", 0))
@@ -66,10 +45,7 @@ def aggregate_by_page(
 
 
 def get_citations(chunks: List[Tuple[str, Dict[str, Any]]]) -> List[str]:
-    """
-    Extract unique citation strings from chunk metadata.
-    Returns e.g. ["DSA_Course_Handout.pdf - Page 1", ...]
-    """
+    
     seen = set()
     citations: List[str] = []
     for _, meta in chunks:
@@ -83,14 +59,7 @@ def get_citations(chunks: List[Tuple[str, Dict[str, Any]]]) -> List[str]:
 def retrieve_and_prepare(
     vectorstore: FAISS, query: str, top_k: int = TOP_K
 ) -> Dict[str, Any]:
-    """
-    Full retrieval pipeline:
-        1. Similarity search
-        2. Evidence filter
-        3. Page aggregation
-        4. Citation list
-    Returns dict with keys: chunks, filtered_chunks, context, citations
-    """
+    
     raw_chunks = retrieve(vectorstore, query, top_k)
     filtered = evidence_filter(raw_chunks)
     context = aggregate_by_page(filtered)
