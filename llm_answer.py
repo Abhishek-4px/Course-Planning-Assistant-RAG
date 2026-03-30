@@ -1,17 +1,7 @@
-"""
-LLM Answer Generation Module
-- Strict prompt: answer ONLY from context
-- Always includes citations
-- Says "I don't know" when info is missing
-"""
 from typing import List, Dict, Any
 
 from llm_client import call_llm
 from reasoning import check_eligibility, suggest_next_courses
-
-
-# ── Prompt Templates ──────────────────────────────────
-
 
 INFORMATION_PROMPT = """You are a university Course Planning Assistant.
 
@@ -69,16 +59,11 @@ COMPLETED COURSES: {completed}
 
 Provide clear course recommendations with citations:"""
 
-
-# ── Answer Generators ─────────────────────────────────
-
-
 def answer_information(query: str, context: str, citations: List[str]) -> str:
-    """Generate an information-type answer."""
+    
     prompt = INFORMATION_PROMPT.format(context=context, query=query)
     answer = call_llm(prompt)
 
-    # Append citations if the LLM didn't include them
     if "Sources:" not in answer and "sources:" not in answer.lower():
         cite_block = "\n\nSources:\n" + "\n".join(f"- {c}" for c in citations)
         answer += cite_block
@@ -92,10 +77,8 @@ def answer_eligibility(
     citations: List[str],
     completed_courses: List[str],
 ) -> str:
-    """Generate an eligibility-type answer."""
-    # Run prerequisite reasoning
-    # Extract course name from query (rough heuristic)
-    course_name = query  # the LLM will parse it from context anyway
+
+    course_name = query  
     elig = check_eligibility(course_name, completed_courses, context)
 
     eligibility_info = []
@@ -138,7 +121,6 @@ def answer_planning(
     citations: List[str],
     completed_courses: List[str],
 ) -> str:
-    """Generate a planning-type answer."""
     suggestions = suggest_next_courses(completed_courses, context)
 
     if suggestions:
@@ -173,9 +155,7 @@ def generate_answer(
     citations: List[str],
     completed_courses: List[str],
 ) -> str:
-    """
-    Route to the correct answer generator based on intent.
-    """
+    
     if intent == "eligibility":
         return answer_eligibility(query, context, citations, completed_courses)
     elif intent == "planning":
