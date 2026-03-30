@@ -1,8 +1,3 @@
-"""
-Intent Classification Module
-- Uses LLM (not rules) to classify user queries into:
-    "eligibility" | "planning" | "information"
-"""
 from llm_client import call_llm
 from config import INTENT_LABELS
 
@@ -24,10 +19,6 @@ Label:"""
 
 
 def classify_intent(query: str) -> str:
-    """
-    Classify a user query into one of the three intent labels.
-    Returns one of: "eligibility", "planning", "information"
-    """
     prompt = INTENT_PROMPT.format(query=query)
     response = call_llm(prompt).strip().lower().strip('"').strip("'")
 
