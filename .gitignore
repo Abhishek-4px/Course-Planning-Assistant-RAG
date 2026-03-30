@@ -1,0 +1,36 @@
+# Virtual Environments
+venv/
+env/
+.env
+
+# Python Cache
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Gradio Cache
+.gradio/
+
+# IDE
+.vscode/
+.idea/
+
+# Testing/Logs
+*.log
+test_output.txt
+err.txt
+gradio_out.txt
+working_link.txt
+gradio_link.txt
+real_link.txt
+real_link2.txt
+
+# Temp Scripts
+run.py
+get_link.py
+get_link2.py
+deploy.py
+check_hf.py
+create_pdf.py
+
+# Note: Keeping vector_store/ as the chunks/FAISS indices are 2MB and instantly speed up deployment!

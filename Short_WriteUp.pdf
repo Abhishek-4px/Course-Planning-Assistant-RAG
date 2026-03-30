@@ -1,0 +1,158 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /Resources 4 0 R /MediaBox [0 0 595 842] /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >>
+endobj
+5 0 obj
+<< /Length 2461 >>
+stream
+BT
+/F1 12 Tf
+40 800 Td
+(Short Write-Up: Course Planning Assistant) Tj
+0 -15 Td
+(Course Planning Assistant - Architecture and Write-Up ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(1. Chosen Catalog/Institution + Sources: ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(- Dataset contains 35 documents \(Course Handouts, Program Guides, ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(and Student Handbook\). Internal synthetic college data. ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(- Accessed: March 2026. ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(2. Architecture Overview: ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(- Ingestion: PyPDF2/docx2txt -> Chunking \(500 chars, 100 overlap\). ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(- Embeddings: HuggingFace all-MiniLM-L6-v2. ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(- Vector DB: FAISS. ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(- Classifier: LLM \(Gemini\) routing to planning/eligibility/information. ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(- Answer Generation: Strict LLM prompting with page citations via metadata. ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(3. Chunking/Retrieval Choices and Tradeoffs: ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(- RecursiveCharacterTextSplitter carefully chosen to preserve paragraphs. ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(- Tradeoff: 500 chars breaks some long prerequisite lists; mitigated ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(by 100 character overlap. ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(- Tradeoff: DOCX documents lack native paging; simulated pages tracking ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(chunk IDs ensure citation capability. ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(4. Prompts and/or Agent Roles \(High Level\): ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(- Intent Classifier: Routes queries to specialized logic. ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(- Extractor: Rule-based logic matches specific 'Prerequisite' structures ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(then formats payload. ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(- Generator: Strict constraint prompting. Forced 'I don't know' fallback. ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(5. Evaluation Summary & Next Improvements: ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(- Key Failure Modes: Occasional fuzzy matching of completed courses ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(against highly abbreviated prerequisites. ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(- Next Improvements: A mature named-entity recognition \(NER\) pass to parse ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(course acronyms and numbers exactly. Support multiple LLM backends ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(via full abstraction layer. ) Tj
+0 -15 Td
+() Tj
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000219 00000 n 
+0000000324 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+400
+%%EOF
