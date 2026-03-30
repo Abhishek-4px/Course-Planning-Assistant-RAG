@@ -1,66 +1,42 @@
-"""
-Course Planning Assistant — Gradio UI
-Main entry point for the application.
-"""
 import os
 import sys
-
-# Ensure the application directory is on the path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
 import gradio as gr
-
 from config import VECTOR_STORE_DIR
 from ingest import run_ingestion, load_vector_store
 from retriever import retrieve_and_prepare
 from intent_classifier import classify_intent
 from llm_answer import generate_answer
 
-
-# ── Load or Build Vector Store ─────────────────────────
-
 def get_vectorstore():
-    """Load existing vector store or build from scratch."""
-    index_path = VECTOR_STORE_DIR / "index.faiss"
+    index_path = VECTOR_STORE_DIR / 
     if index_path.exists():
-        print("Loading existing vector store ...")
+        print("Loading existing vector store")
         return load_vector_store()
     else:
-        print("Vector store not found. Running ingestion ...")
+        print("Vector store not found. Running ingestion ")
         run_ingestion()
         return load_vector_store()
 
 
-print("Initializing Course Planning Assistant ...")
+print("Initializing Course Planning Assistant ")
 vectorstore = get_vectorstore()
 print("Ready!\n")
 
 
-# ── Core Pipeline ──────────────────────────────────────
-
 def answer_query(query: str, completed_courses_str: str) -> str:
-    """
-    Full RAG pipeline:
-        Query → Intent Classification → Retrieval → Evidence Filter
-        → Page Aggregation → Reasoning → LLM Answer
-    """
     if not query.strip():
         return "Please enter a query."
 
-    # Parse completed courses
+    
     completed_courses = [
         c.strip() for c in completed_courses_str.split(",")
         if c.strip()
     ] if completed_courses_str.strip() else []
 
     try:
-        # Step 1: Classify intent
         intent = classify_intent(query)
-
-        # Step 2: Retrieve + filter + aggregate
         retrieval = retrieve_and_prepare(vectorstore, query)
-
-        # Step 3: Generate answer
         answer = generate_answer(
             query=query,
             intent=intent,
@@ -68,15 +44,10 @@ def answer_query(query: str, completed_courses_str: str) -> str:
             citations=retrieval["citations"],
             completed_courses=completed_courses,
         )
-
-        # Add intent debug info
         return f"{answer}\n\n---\nDetected Intent: {intent}"
 
     except Exception as e:
-        return f"❌ An error occurred: {str(e)}\n\nPlease try rephrasing your query."
-
-
-# ── Gradio Interface (Blocks) ──────────────────────────
+        return f"An error occurred: {str(e)}\n\nPlease try rephrasing your query."
 
 with gr.Blocks(theme=gr.themes.Soft()) as demo:
     gr.Markdown("# Course Planning Assistant")
