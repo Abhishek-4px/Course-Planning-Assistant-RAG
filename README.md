@@ -1,13 +1,3 @@
----
-title: Course Planning Assistant
-emoji: 🎓
-colorFrom: blue
-colorTo: indigo
-sdk: gradio
-app_file: app.py
-pinned: false
----
-
 # Course Planning Assistant
 
 This repository contains a full end-to-end RAG (Retrieval-Augmented Generation) system that serves as a Course Planning Assistant. It helps students check course eligibility (prerequisites), get course information, and receive course planning suggestions.
