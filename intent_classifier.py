@@ -22,10 +22,10 @@ def classify_intent(query: str) -> str:
     prompt = INTENT_PROMPT.format(query=query)
     response = call_llm(prompt).strip().lower().strip('"').strip("'")
 
-    # Validate the response
+    
     for label in INTENT_LABELS:
         if label in response:
             return label
 
-    # Default fallback
+    
     return "information"
